@@ -1,49 +1,71 @@
+/*
+* The DiceGame program generates a random number between 1 and 6
+* and prompts the user to guess it. It handles invalid inputs safely
+* and tracks total attempts.
+*
+* @author Sarah O
+* @version 1.0
+* @since 2026-10-12
+*/
 
-import java.util.Random; // This import statement is necessary for generating random numbers
-import java.util.Scanner; // This import statement is necessary to read the user's inputs
+import java.util.Random;
+import java.util.Scanner;
 
-public class DiceGame { // This class is used to play a dice game where the user guesses a random number between 1 and 6
-    public static void main(String[] args) { // This is the main method where the program starts execution
+public final class DiceGame {
 
-        Scanner scanner = new Scanner(System.in); // This creates a new Scanner object to read user input from the console
-        Random random = new Random(); // This creates a new Random object to generate random numbers
+    /**
+     * Private constructor to prevent instantiation.
+     */
+    private DiceGame() {
+       // Prevent utility class instantiation
+    }
 
-        int trueGuess = random.nextInt(6) + 1; // This generates a random number between 1 and 6 (6 is included) and assigns it to the variable 'trueGuess'
-        int guesses = 0; // This variable keeps track of the number of guesses the user has made
+    /**
+     * Main entry point for the Dice Game application.
+     *
+     * @param args Command line arguments (unused).
+     */
+    public static void main(final String[] args) { // Main method to run the Dice Game
+        final Scanner scanner = new Scanner(System.in);
+        final Random random = new Random();
 
-        System.out.println("Welcome to DiceGame!");
-        System.out.println("Pick a number between 1 and 6:");
+        // Generate random number between 1 and 6
+        final int targetNumber = random.nextInt(6) + 1; // Random number between 1 and 6
+        int guessCount = 0; // Counter for number of guesses    
+        int userGuess = 0; // Variable to store user's guess
 
-        int guess = 0;
+        System.out.println("Welcome to the Guessing Game!"); 
 
-        while (guess != trueGuess) {
-            // Asks the user for a guess
-            System.out.print("\nEnter your guess: ");
-            String input = scanner.nextLine().trim();
+        // Loop until user guesses correctly
+        do {
+            System.out.print("Guess a number between 1 and 6: ");
+            final String input = scanner.nextLine();
 
-            // Valid whole number from 1 to 6?
-            int guessValue;
             try {
-                guessValue = Integer.parseInt(input);
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid whole number!");
-                continue; // Asks the user for a guess again without counting as a guess
+                userGuess = Integer.parseInt(input);
+
+                // Check range validity
+                if (userGuess < 1 || userGuess > 6) {
+                    System.out.println("Invalid input! Number must be between 1 and 6.");
+                } else {
+                    guessCount++;
+
+                    // Compare guess to target
+                    if (userGuess < targetNumber) {
+                        System.out.println("Too low! Try again.");
+                    } else if (userGuess > targetNumber) {
+                        System.out.println("Too high! Try again.");
+                    } else {
+                        System.out.println("You got it right!");
+                        System.out.println("It took you " + guessCount + " try/tries.");
+                    }
+                }
+            } catch (NumberFormatException e) { // Handle non-integer input
+                System.out.println("Invalid input! Please enter a valid integer.");
             }
 
-            if (guessValue < 1 || guessValue > 6) {
-                System.out.println("Number must be from 1 to 6!");
-                continue; // Asks the user for a guess again without counting as a guess
-            }
+        } while (userGuess != targetNumber); // Continue until the correct guess is made
 
-            guess = guessValue;
-
-            // guesses = guesses + 1
-            guesses++;
-            // guess == secret?
-            if (guess == trueGuess) {
-                System.out.println("You got it! It took " + guesses + " guesses");
-            }
-        }
         scanner.close();
     }
 }
